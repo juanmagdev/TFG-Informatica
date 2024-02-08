@@ -35,12 +35,8 @@ pivot_df = df.pivot_table(index=['UserId', 'Day'], columns='Hour', values='Consu
 # Rellenar los valores nulos con el valor de la siguiente columna, luego la anterior, y finalmente con 0
 pivot_df = pivot_df.fillna(method='bfill', axis=1).fillna(method='ffill', axis=1).fillna(0)
 
-print(pivot_df.head())
-
 # Ajustar el rango de horas a 1-48
 pivot_df.columns = range(1, 49)
-
-print(pivot_df.head())
 
 ## PASAMOS DE 48 a 24 columnas
 
@@ -52,4 +48,18 @@ hourly_df = pd.DataFrame()
 for hour, (col1, col2) in enumerate(column_pairs, start=1):
     hourly_df[hour] = (pivot_df[col1] + pivot_df[col2]) / 2
 
-print(hourly_df.head())
+
+# Calcular la desviación estándar para cada usuario
+std_per_user = hourly_df.groupby('UserId').std()
+
+# Seleccionar los n usuarios con las mayores desviaciones estándar
+nUser = 4
+top_users = std_per_user.nlargest(nUser, columns=range(1, 25)).index
+
+# Filtrar los datos para quedarnos solo con los usuarios seleccionados
+sample_df = hourly_df[hourly_df.index.get_level_values('UserId').isin(top_users)]
+
+# Guardar el DataFrame en un archivo CSV
+sample_df.to_csv('sample_data.csv')
+
+print("Datos de los 4 usuarios con mayor variabilidad en el consumo de energía han sido guardados en 'sample_data.csv'")

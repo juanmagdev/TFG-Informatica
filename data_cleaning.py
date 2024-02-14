@@ -45,21 +45,28 @@ column_pairs = [(i, i + 1) for i in range(1, 48, 2)]
 
 # Crear una nueva tabla pivote con las medias de las columnas agrupadas
 hourly_df = pd.DataFrame()
-for hour, (col1, col2) in enumerate(column_pairs, start=1):
-    hourly_df[hour] = (pivot_df[col1] + pivot_df[col2]) / 2
+for hour, (col1, col2) in enumerate(column_pairs, start=0):
+    hourly_df[hour] = (pivot_df[col1] + pivot_df[col2])
 
+hourly_df.to_csv('hourly_data.csv')
 
 # Calcular la desviación estándar para cada usuario
 std_per_user = hourly_df.groupby('UserId').std()
 
 # Seleccionar los n usuarios con las mayores desviaciones estándar
 nUser = 4
-top_users = std_per_user.nlargest(nUser, columns=range(1, 25)).index
+top_users = std_per_user.nlargest(nUser, columns=range(0, 24)).index
 
 # Filtrar los datos para quedarnos solo con los usuarios seleccionados
 sample_df = hourly_df[hourly_df.index.get_level_values('UserId').isin(top_users)]
 
-# Guardar el DataFrame en un archivo CSV
+
+# Ordeno sample data por day y luego por user id
+sample_df = sample_df.reset_index().sort_values(by=['Day', 'UserId'])
+
+# Me quedo con las nUser primeras filas
+sample_df = sample_df.head(nUser)
+
 sample_df.to_csv('sample_data.csv')
 
 print("Datos de los 4 usuarios con mayor variabilidad en el consumo de energía han sido guardados en 'sample_data.csv'")

@@ -5,29 +5,16 @@ file = '1'
 rute = 'source_data/File'+ file + '.txt'
 df = pd.read_csv(rute, sep = ' ', names=["UserId", "DateInfo", "ConsumedEnergy"])
 
-#    User ID  Date Info  Consumed Energy
-# 0     1392      19503            0.140
-# 1     1392      19504            0.138
-# 2     1392      19505            0.140
-# 3     1392      19506            0.145
-# 4     1392      19507            0.145
-
 # Divido la columna Date Info en 2 columnas, una para el dia (3 primeros digitos) y otra para la hora (2 ultimos digitos), y elimino DateInfo
 df['Day'] = df['DateInfo'].apply(lambda x: int(str(x)[:-2]))
 df['Hour'] = df['DateInfo'].apply(lambda x: int(str(x)[-2:]))
 df.drop(columns=['DateInfo'], inplace=True)
-print(df.head())
-
-#    UserId  ConsumedEnergy  Day  Hour
-# 0    1392           0.140  195     3
-# 1    1392           0.138  195     4
-# 2    1392           0.140  195     5
-# 3    1392           0.145  195     6
-# 4    1392           0.145  195     7
-
 
 # Como se puede ver, hay valores que tienen hora superior a 48, en estos casos, desecho esas filas
 df = df[df['Hour'] <= 48] # Solo me quedo con los que tienen intervalo de 1 a 48
+
+# Paso de kwh a wh, multiplicando por 1000 y trunco a enteros
+# df['ConsumedEnergy'] = (df['ConsumedEnergy'] * 1000)
 
 # Crear una tabla pivote
 pivot_df = df.pivot_table(index=['UserId', 'Day'], columns='Hour', values='ConsumedEnergy', aggfunc='first')
@@ -64,9 +51,27 @@ sample_df = hourly_df[hourly_df.index.get_level_values('UserId').isin(top_users)
 # Ordeno sample data por day y luego por user id
 sample_df = sample_df.reset_index().sort_values(by=['Day', 'UserId'])
 
-# Me quedo con las nUser primeras filas
-sample_df = sample_df.head(nUser)
+# Me quedo con las nUser primeras filas, n dias
+nDay=30
+sample_df = sample_df.head(nUser*nDay)
 
 sample_df.to_csv('sample_data.csv')
 
 print("Datos de los 4 usuarios con mayor variabilidad en el consumo de energía han sido guardados en 'sample_data.csv'")
+
+# creo un dataset nuevo con 24*30 columnas, 4 filas, es decir, pongo las horas de cada usuarios seguidas en una fila
+
+# Crear un nuevo dataframe con los datos de consumo de energía de los usuarios seleccionados
+# creo 24 primera columnas como D1-H1 D1-H2 ... D1-H24 y luego D2-H1 D2-H2 ... D2-H24 y asi sucesivamente hasta D30-H24
+# y luego las 4 filas con los datos de los 4 usuarios
+df = sample_df
+
+df_melted = pd.melt(df, id_vars=['UserId', 'Day'], var_name='Hour', value_name='Value')
+df_melted['Day_Hour'] = df_melted['Day'].astype(str) + '-'+ df_melted['Hour'].astype(str)
+df_pivot = df_melted.pivot_table(index='UserId', columns='Day_Hour', values='Value', aggfunc='first')
+sorted_columns = sorted(df_pivot.columns, key=lambda x: tuple(map(int, x.split('-'))))
+
+df_pivot = df_pivot[sorted_columns]
+
+print(df_pivot)
+df_pivot.to_csv('final_data.csv')

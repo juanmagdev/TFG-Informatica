@@ -103,28 +103,28 @@ def optimize_energy_distribution_hard(total_energy, consumed_energy):
 
 # EJEMPLO USO
 
-total_energy = 4
-consumed_energy = np.array([0.614, 0.193, 3.146, 2.919])
-initial_coef = np.ones(4) / 4 # Coeficientes iniciales 0,25 cada uno
+# total_energy = 4
+# consumed_energy = np.array([0.212, 0.1, 3, 2.919])
+# initial_coef = np.ones(4) / 4 # Coeficientes iniciales 0,25 cada uno
 
-result = optimization_function(initial_coef, total_energy, consumed_energy)
-print("Desperdicio total de energía a la red:", result)
+# result = optimization_function(initial_coef, total_energy, consumed_energy)
+# print("Desperdicio total de energía a la red:", result)
 
-# USUARIO                             A          B          C          D
-# Coeficientes de reparto óptimos: [0.1535     0.04825    0.40745252 0.39079748]
-# Desperdicio mínimo de energía a la red: 0.0
-# [0.1535     0.04825    0.40745252 0.39079748] * 4 = [0.614      0.193      1.62981008 1.56318992] <=  [0.614, 0.193, 3.146, 2.919]
+# # USUARIO                             A          B          C          D
+# # Coeficientes de reparto óptimos: [0.1535     0.04825    0.40745252 0.39079748]
+# # Desperdicio mínimo de energía a la red: 0.0
+# # [0.1535     0.04825    0.40745252 0.39079748] * 4 = [0.614      0.193      1.62981008 1.56318992] <=  [0.614, 0.193, 3.146, 2.919]
 
-print("\nEjemplo de uso por minimización:")
-optimized_coef, min_waste = optimize_energy_distribution(total_energy, consumed_energy)
-print("Coeficientes de reparto óptimos:", optimized_coef)
-print("Desperdicio mínimo de energía a la red:", min_waste)
+# print("\nEjemplo de uso por minimización:")
+# optimized_coef, min_waste = optimize_energy_distribution(total_energy, consumed_energy)
+# print("Coeficientes de reparto óptimos:", optimized_coef)
+# print("Desperdicio mínimo de energía a la red:", min_waste)
 
 
-print("\nEjemplo de uso por fuerza bruta:")
-optimized_coef, min_waste = optimize_energy_distribution_hard(total_energy, consumed_energy)
-print("Coeficientes de reparto óptimos:", optimized_coef)
-print("Desperdicio mínimo de energía a la red:", min_waste)
+# print("\nEjemplo de uso por fuerza bruta:")
+# optimized_coef, min_waste = optimize_energy_distribution_hard(total_energy, consumed_energy)
+# print("Coeficientes de reparto óptimos:", optimized_coef)
+# print("Desperdicio mínimo de energía a la red:", min_waste)
 
 
 

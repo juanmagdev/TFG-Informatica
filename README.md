@@ -65,7 +65,8 @@ El proyecto consta de varios componentes estructurados en directorios que facili
     - `optimization2_SLSQP_init.csv:` Coeficientes iniciales usados para alimentar la solución SLSQP, basados en la salida de otro método de SLSQP.
 - **grafics:** Contiene scripts de Python que generan las gráficas utilizadas en la documentación del proyecto.
 - **output_files:** Guarda los archivos CSV generados con los datos de consumo procesados.
-- **source_data:** Incluye archivos de datos en bruto desde `File1.txt` hasta `File6.txt`, así como datos de generación por defecto.
+- **source_data:** Incluye archivos de datos en bruto desde `File1.txt` hasta `File6.txt`, así como datos de generación por defecto. Estos archivos no se encuentran en el repositorio porque son muy pesados. Deben descargarse de esta [web](https://uma365.sharepoint.com/:f:/s/URSUS-DM/EjPxkbepQilBszjFzCJaOPABHJpLsOtpPgXClvqf8BjOVw?e=tGCnmg) y moverlos a la carpeta mencionada.
+
 
 ### Notebook de Optimización 🔧
 

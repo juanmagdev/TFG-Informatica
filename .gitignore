@@ -3,3 +3,4 @@ __pycache__/
 .vscode/
 output_files/
 source_data/
+coefficients/
